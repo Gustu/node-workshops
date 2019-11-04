@@ -3,7 +3,7 @@ const InMemoryTweetRepository = (seed) => {
 
   const orderByCreatedAt = (first, second) => first.createdAt - second.createdAt;
 
-  const api = {
+  return {
     async createNew(tweet) {
       tweets[tweet.tweetId] = tweet;
       return tweet;
@@ -17,13 +17,13 @@ const InMemoryTweetRepository = (seed) => {
         .sort(orderByCreatedAt);
     },
     async findAll() {
-      return Object.values(tweets).sort(orderByCreatedAt);
+      return Object.values(tweets)
+        .sort(orderByCreatedAt);
     },
     async delete(tweetId) {
       delete tweets[tweetId];
     },
   };
-  return api;
 };
 
 module.exports = InMemoryTweetRepository;

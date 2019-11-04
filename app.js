@@ -1,7 +1,11 @@
 const express = require('express');
+const ApiRoot = require('./controllers');
+const TweetConfig = require('./config/TweetConfig');
+
+const config = TweetConfig({});
 
 const app = express();
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.use('/api', ApiRoot({ tweetConfig: config }));
 
 module.exports = app;
