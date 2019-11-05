@@ -1,18 +1,8 @@
 const assert = require('assert');
+const { parseISO } = require('date-fns');
 const InMemoryTweetRepository = require('../../db/InMemoryTweetRepository');
 const TweetService = require('../TweetService');
 const UUID = require('../../common/Uuid');
-
-const TWEET_ID = 'b6dd72a0-d79b-4777-b154-cfe6b42c2b42';
-
-const TWEETS = {
-  [TWEET_ID]: {
-    tweetId: TWEET_ID,
-    writerId: '671b1f15-0178-4122-bc1e-c13f7f61d814',
-    message: 'asdsad',
-    createdAt: new Date(),
-  },
-};
 
 describe('TweetService', () => {
   const tweetRepository = InMemoryTweetRepository();
@@ -27,12 +17,14 @@ describe('TweetService', () => {
   it('should write tweet', async () => {
     // when
     const writerId = UUID.generate();
-    const tweetService = TweetService({ tweetRepository });
+    const tweetService = TweetService({ tweetRepository, clock: () => new Date() });
     const message = '12313';
 
     // given
-
-    const tweet = await tweetService.writeTweet({ writerId, message });
+    const tweet = await tweetService.writeTweet({
+      writerId,
+      message,
+    });
 
     // then
     tweetMatchesRequestData(tweet, writerId, message);
@@ -43,12 +35,15 @@ describe('TweetService', () => {
   it('should not write tweet when message exceeds 255 chars', async () => {
     // when
     const writerId = UUID.generate();
-    const tweetService = TweetService({ tweetRepository });
+    const tweetService = TweetService({ tweetRepository, clock: () => new Date() });
     const message = [...Array(256 + 1)].join('1');
 
     // given
 
-    const promise = tweetService.writeTweet({ writerId, message });
+    const promise = tweetService.writeTweet({
+      writerId,
+      message,
+    });
 
     // then
     await assert.rejects(promise);
@@ -56,7 +51,7 @@ describe('TweetService', () => {
 
   it('should not write tweet when author is missing', async () => {
     // when
-    const tweetService = TweetService({ tweetRepository });
+    const tweetService = TweetService({ tweetRepository, clock: () => new Date() });
     const message = [...Array(256 + 1)].join('1');
 
     // given
@@ -67,20 +62,58 @@ describe('TweetService', () => {
     await assert.rejects(promise);
   });
 
-  it('should delete tweet', async () => {
-    // when
-    const tweetRepositoryWithSeed = InMemoryTweetRepository(TWEETS);
-    const tweetService = TweetService({ tweetRepository: tweetRepositoryWithSeed });
-    const tweetBefore = await tweetRepositoryWithSeed.findBy(TWEET_ID);
-
+  it('should not delete tweet after 3 minutes', async () => {
     // given
-    await tweetService.deleteTweet(TWEET_ID);
+    const now = () => parseISO('2019-01-20 12:00:00');
+    const nowPlus3Minutes = () => parseISO('2019-01-20 12:03:01');
+    const tweetRepositoryWithSeed = InMemoryTweetRepository();
+    const tweetService = TweetService({
+      tweetRepository: tweetRepositoryWithSeed,
+      clock: now,
+    });
+    const tweet = await tweetService.writeTweet({
+      writerId: UUID.generate(),
+      message: 'asd',
+    });
+
+    // when
+    const tweetServiceAfter = TweetService({
+      tweetRepository: tweetRepositoryWithSeed,
+      clock: nowPlus3Minutes,
+    });
+    const deleteTweet = tweetServiceAfter.deleteTweet(tweet.tweetId);
 
     // then
-    const tweetAfter = await tweetRepositoryWithSeed.findBy(TWEET_ID);
-    assert(tweetBefore !== null);
-    assert(tweetAfter === null);
+    await assert.rejects(deleteTweet, {
+      name: 'Error',
+      message: 'Cannot delete tweet',
+    });
   });
 
+  it('should delete tweet after 2 minutes and 59 seconds', async () => {
+    // given
+    const now = () => parseISO('2019-01-20 12:00:00');
+    const nowPlus3Minutes = () => parseISO('2019-01-20 12:02:59');
+    const tweetRepositoryWithSeed = InMemoryTweetRepository();
+    const tweetService = TweetService({
+      tweetRepository: tweetRepositoryWithSeed,
+      clock: now,
+    });
+    const tweet = await tweetService.writeTweet({
+      writerId: UUID.generate(),
+      message: 'asd',
+    });
+
+    // when
+    const tweetServiceAfter = TweetService({
+      tweetRepository: tweetRepositoryWithSeed,
+      clock: nowPlus3Minutes,
+    });
+    await tweetServiceAfter.deleteTweet(tweet.tweetId);
+
+    // then
+    const tweetAfter = tweetRepository.findBy(tweet.tweetId);
+    await assert.rejects(tweetAfter);
+  });
 
 });

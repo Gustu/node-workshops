@@ -1,19 +1,9 @@
-const validator = require('validator');
 const Tweet = require('../models/Tweet');
-const { validate } = require('../common/Uuid');
 
-const TweetService = ({ tweetRepository }) => {
+const TweetService = ({ tweetRepository, clock }) => {
   const writeTweet = async ({ writerId, message }) => {
-    if (!validator.isLength(message, {
-      min: 0,
-      max: 255,
-    })) {
-      throw new Error('Message can contain only 255 chars');
-    }
-
-    validate(writerId);
-
     const tweet = Tweet({
+      clock,
       writerId,
       message,
     });
@@ -21,7 +11,17 @@ const TweetService = ({ tweetRepository }) => {
     return tweetRepository.createNew(tweet);
   };
 
-  const deleteTweet = async (tweetId) => tweetRepository.delete(tweetId);
+  const deleteTweet = async (tweetId) => {
+    const tweet = await tweetRepository.findBy(tweetId);
+
+    const canDelete = tweet.canDeleteAt(clock());
+
+    if (!canDelete) {
+      throw new Error('Cannot delete tweet');
+    }
+
+    return tweetRepository.delete(tweetId);
+  };
 
   const getTweets = async () => tweetRepository.findAll();
 

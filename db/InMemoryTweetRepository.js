@@ -1,7 +1,9 @@
+const Tweet = require('../models/Tweet');
+
 const InMemoryTweetRepository = (seed) => {
   const tweets = seed || {};
 
-  const orderByCreatedAt = (first, second) => first.createdAt - second.createdAt;
+  const orderByCreatedAtDescending = (first, second) => second.createdAt - first.createdAt;
 
   return {
     async createNew(tweet) {
@@ -9,16 +11,21 @@ const InMemoryTweetRepository = (seed) => {
       return tweet;
     },
     async findBy(tweetId) {
-      return tweets[tweetId] || null;
+      if (!tweets[tweetId]) {
+        throw new Error('Tweet not found');
+      }
+      return Tweet(tweets[tweetId]) || null;
     },
     async findByWriter(writerId) {
       return Object.values(tweets)
         .find((tweet) => tweet.writerId === writerId)
-        .sort(orderByCreatedAt);
+        .map((tweet) => Tweet(tweet))
+        .sort(orderByCreatedAtDescending);
     },
     async findAll() {
       return Object.values(tweets)
-        .sort(orderByCreatedAt);
+        .map((tweet) => Tweet(tweet))
+        .sort(orderByCreatedAtDescending);
     },
     async delete(tweetId) {
       delete tweets[tweetId];
