@@ -1,4 +1,5 @@
 const TweetService = require('../services/TweetService');
+const AccountService = require('../services/AccountService');
 const InMemoryTweetRepository = require('../db/InMemoryTweetRepository');
 const PostgresTweetRepository = require('../db/PostgresTweetRepository');
 
@@ -11,6 +12,7 @@ const TweetConfig = ({ tweetDb, clock }) => {
       tweetRepository,
       clock,
     }),
+    accountService: AccountService({}),
   });
 };
 

@@ -9,5 +9,6 @@ CREATE TABLE tweet
 CREATE TABLE account (
     account_id UUID PRIMARY KEY,
     email TEXT NOT NULL,
-    hash TEXT NOT NULL
+    hash TEXT NOT NULL,
+    created_at DATE DEFAULT NOW()
 );
