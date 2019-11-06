@@ -15,12 +15,12 @@ describe('TweetService', () => {
   }
 
   it('should write tweet', async () => {
-    // when
+    // given
     const writerId = UUID.generate();
     const tweetService = TweetService({ tweetRepository, clock: () => new Date() });
     const message = '12313';
 
-    // given
+    // when
     const tweet = await tweetService.writeTweet({
       writerId,
       message,
@@ -33,13 +33,12 @@ describe('TweetService', () => {
   });
 
   it('should not write tweet when message exceeds 255 chars', async () => {
-    // when
+    // given
     const writerId = UUID.generate();
     const tweetService = TweetService({ tweetRepository, clock: () => new Date() });
     const message = [...Array(256 + 1)].join('1');
 
-    // given
-
+    // when
     const promise = tweetService.writeTweet({
       writerId,
       message,
@@ -50,12 +49,11 @@ describe('TweetService', () => {
   });
 
   it('should not write tweet when author is missing', async () => {
-    // when
-    const tweetService = TweetService({ tweetRepository, clock: () => new Date() });
-    const message = [...Array(256 + 1)].join('1');
-
     // given
+    const tweetService = TweetService({ tweetRepository, clock: () => new Date() });
+    const message = 'asdasdaswe';
 
+    // when
     const promise = tweetService.writeTweet({ message });
 
     // then
@@ -112,7 +110,7 @@ describe('TweetService', () => {
     await tweetServiceAfter.deleteTweet(tweet.tweetId);
 
     // then
-    const tweetAfter = tweetRepository.findBy(tweet.tweetId);
+    const tweetAfter = tweetRepository.findByTweetId(tweet.tweetId);
     await assert.rejects(tweetAfter);
   });
 

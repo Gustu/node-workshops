@@ -10,7 +10,7 @@ const InMemoryTweetRepository = (seed) => {
       tweets[tweet.tweetId] = tweet;
       return tweet;
     },
-    async findBy(tweetId) {
+    async findByTweetId(tweetId) {
       if (!tweets[tweetId]) {
         throw new Error('Tweet not found');
       }
