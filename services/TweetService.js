@@ -3,7 +3,6 @@ const Tweet = require('../models/Tweet');
 const TweetService = ({ tweetRepository, clock }) => {
   const writeTweet = async ({ writerId, message }) => {
     const tweet = Tweet({
-      clock,
       writerId,
       message,
     });
@@ -12,12 +11,12 @@ const TweetService = ({ tweetRepository, clock }) => {
   };
 
   const deleteTweet = async (tweetId) => {
-    const tweet = await tweetRepository.findBy(tweetId);
+    const tweet = await tweetRepository.findByTweetId(tweetId);
 
-    const canDelete = tweet.canDeleteAt(clock());
+    const enoughTimeForDelete = tweet.enoughTimeForDelete(clock());
 
-    if (!canDelete) {
-      throw new Error('Cannot delete tweet');
+    if (!enoughTimeForDelete) {
+      throw new Error('Cannot delete tweet. Time elapsed.');
     }
 
     return tweetRepository.delete(tweetId);

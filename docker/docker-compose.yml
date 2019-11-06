@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+  postgres:
+    image: postgres:11.2
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_DB : tweet_db
+    ports:
+      - 5433:5432
+  postgres-test:
+    image: postgres:11.2
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_DB: test_tweet_db
+    ports:
+      - 5434:5432

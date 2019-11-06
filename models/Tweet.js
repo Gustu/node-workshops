@@ -7,14 +7,13 @@ const Tweet = ({
   tweetId = Uuid.generate(),
   writerId,
   message,
-  clock,
-  createdAt = clock(),
+  createdAt,
 }) => ({
   tweetId,
   writerId,
   message,
   createdAt,
-  canDeleteAt: (when) => differenceInSeconds(when, createdAt) <= MAX_MINUTES_FOR_DELETION_IN_SEC,
+  enoughTimeForDelete: (when) => differenceInSeconds(when, createdAt) <= MAX_MINUTES_FOR_DELETION_IN_SEC,
 });
 
 module.exports = Tweet;

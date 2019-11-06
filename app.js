@@ -3,8 +3,9 @@ const bodyParser = require('body-parser');
 const ApiRoot = require('./controllers');
 const TweetConfig = require('./config/TweetConfig');
 const clock = require('./common/Clock');
+const db = require('./config/DatabaseConfig');
 
-const config = TweetConfig({ clock });
+const config = TweetConfig({ clock, tweetDb: db });
 
 const app = express();
 
