@@ -1,11 +1,18 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Uuid = require('../common/Uuid');
 
 const AccountService = ({ accountRepository }) => {
+  const SECRET = 'shhhhh';
+  const generateToken = (accountId) => jwt.sign({ accountId }, SECRET);
+
   const login = async ({ email, password }) => {
     const account = await accountRepository.findByEmail(email);
     const passwordMatch = await bcrypt.compare(password, account.hash);
-    return passwordMatch;
+    if (passwordMatch) {
+      return generateToken(account.account_id);
+    }
+    throw new Error('Invalid credentials');
   };
 
   const register = async ({ email, password }) => {
