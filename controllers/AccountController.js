@@ -6,11 +6,11 @@ const AccountController = ({ accountService }) => {
 
   router.post('/register', asyncWrapper(async (req, res) => {
     const { email, password } = req.body;
-    const account = await accountService.register({
+    const accountId = await accountService.register({
       email,
       password,
     });
-    res.json(account);
+    res.json({ accountId });
   }));
 
   router.post('/login', asyncWrapper(async (req, res) => {
@@ -19,7 +19,7 @@ const AccountController = ({ accountService }) => {
       email,
       password,
     });
-    res.json(token);
+    res.json({ token });
   }));
 
   return router;

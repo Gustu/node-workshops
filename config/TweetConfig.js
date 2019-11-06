@@ -2,6 +2,7 @@ const TweetService = require('../services/TweetService');
 const AccountService = require('../services/AccountService');
 const InMemoryTweetRepository = require('../db/InMemoryTweetRepository');
 const PostgresTweetRepository = require('../db/PostgresTweetRepository');
+const AccountRepository = require('../db/PostgresAccountRepository');
 
 const TweetConfig = ({ tweetDb, clock }) => {
   const tweetRepository = tweetDb
@@ -12,7 +13,7 @@ const TweetConfig = ({ tweetDb, clock }) => {
       tweetRepository,
       clock,
     }),
-    accountService: AccountService({}),
+    accountService: AccountService({ accountRepository: AccountRepository({ db: tweetDb }) }),
   });
 };
 
