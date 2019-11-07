@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const Uuid = require('../common/Uuid');
 const { generateToken } = require('../common/Jwt');
 

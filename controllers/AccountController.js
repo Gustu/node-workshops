@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const asyncWrapper = require('../middlewares/async');
+const asyncWrapper = require('../middlewares/AsyncWrapper');
 
 const AccountController = ({ accountService }) => {
   const router = Router();

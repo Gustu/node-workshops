@@ -4,6 +4,7 @@ const ApiRoot = require('./controllers');
 const TweetConfig = require('./config/TweetConfig');
 const clock = require('./common/Clock');
 const db = require('./config/DatabaseConfig');
+const jwtAuthentication = require('./middlewares/JwtAuthentication');
 
 const config = TweetConfig({ clock, tweetDb: db });
 
@@ -11,6 +12,8 @@ const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(jwtAuthentication);
 
 app.use('/api', ApiRoot({ tweetConfig: config }));
 
