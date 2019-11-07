@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const asyncWrapper = require('../middlewares/AsyncWrapper');
+const asyncWrapper = require('../../common/middlewares/AsyncWrapper');
 
 const TweetController = ({ tweetService }) => {
   const router = Router();

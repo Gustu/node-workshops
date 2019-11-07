@@ -1,6 +1,6 @@
 const validator = require('validator');
 const Tweet = require('../models/Tweet');
-const Uuid = require('../common/Uuid');
+const Uuid = require('../../common/Uuid');
 
 const MESSAGE_MIN_CHARS = 1;
 const MESSAGE_MAX_CHARS = 255;

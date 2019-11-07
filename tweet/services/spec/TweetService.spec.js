@@ -2,7 +2,7 @@ const assert = require('assert');
 const { parseISO } = require('date-fns');
 const InMemoryTweetRepository = require('../../db/InMemoryTweetRepository');
 const TweetService = require('../TweetService');
-const UUID = require('../../common/Uuid');
+const UUID = require('../../../common/Uuid');
 
 describe('TweetService', () => {
   const tweetRepository = InMemoryTweetRepository();

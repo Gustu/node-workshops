@@ -1,5 +1,5 @@
 const assert = require('assert');
-const PostgresTweetRepository = require('../PostgresTweetRepository');
+const PostgresTweetRepository = require('../../tweet/db/PostgresTweetRepository');
 const db = require('../../config/DatabaseConfig');
 const UUID = require('../../common/Uuid');
 

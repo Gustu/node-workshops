@@ -1,12 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const ApiRoot = require('./controllers');
-const TweetConfig = require('./config/TweetConfig');
+const ApiRoot = require('./index');
+const TweetConfig = require('./tweet/TweetConfig');
+const AuthConfig = require('./auth/AuthConfig');
 const clock = require('./common/Clock');
 const db = require('./config/DatabaseConfig');
-const jwtAuthentication = require('./middlewares/JwtAuthentication');
+const jwtAuthentication = require('./common/middlewares/JwtAuthentication');
 
-const config = TweetConfig({ clock, tweetDb: db });
+const tweetConfig = TweetConfig({ clock, tweetDb: db });
+const authConfig = AuthConfig({ authDb: db });
 
 const app = express();
 
@@ -15,7 +17,7 @@ app.use(bodyParser.json());
 
 app.use(jwtAuthentication);
 
-app.use('/api', ApiRoot({ tweetConfig: config }));
+app.use('/api', ApiRoot({ tweetConfig, authConfig }));
 
 app.use((req, res, next) => {
   res.status(404).send(`Not found ${req.path}`);

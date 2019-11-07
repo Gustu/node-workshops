@@ -1,5 +1,5 @@
 const { differenceInSeconds } = require('date-fns');
-const Uuid = require('../common/Uuid');
+const Uuid = require('../../common/Uuid');
 
 const MAX_MINUTES_FOR_DELETION_IN_SEC = 3 * 60;
 
