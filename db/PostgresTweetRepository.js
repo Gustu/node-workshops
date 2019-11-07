@@ -9,12 +9,16 @@ const mapTweet = (row) => Tweet({
 
 const PostgresTweetRepository = ({ db }) => ({
   async createNew(tweet) {
-    await db('tweet')
+    const rows = await db('tweet')
       .insert({
         tweet_id: tweet.tweetId,
         writer_id: tweet.writerId,
         message: tweet.message,
       }, ['tweet_id']);
+    if (!rows.length) {
+      throw new Error('Could not create new tweet');
+    }
+    return { tweetId: rows[0].tweet_id };
   },
   async findByTweetId(tweetId) {
     const row = await db
@@ -22,6 +26,9 @@ const PostgresTweetRepository = ({ db }) => ({
       .from('tweet')
       .where({ tweet_id: tweetId })
       .first();
+    if (!row) {
+      throw new Error('Could not find tweet by id');
+    }
     return mapTweet(row);
   },
   async findByWriter(writerId) {

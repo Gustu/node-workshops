@@ -10,9 +10,9 @@ const TweetController = ({ tweetService }) => {
   }));
 
   router.post('/', asyncWrapper(async (req, res) => {
-    const { writerId, message } = req.body;
+    const { message } = req.body;
     const tweet = await tweetService.writeTweet({
-      writerId,
+      writerId: req.user,
       message,
     });
     res.json(tweet);
