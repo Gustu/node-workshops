@@ -1,10 +1,9 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Uuid = require('../common/Uuid');
+const { generateToken } = require('../common/Jwt');
 
 const AccountService = ({ accountRepository }) => {
-  const generateToken = (accountId) => jwt.sign({ accountId }, process.env.JWT_SECRET);
-
   const login = async ({ email, password }) => {
     const account = await accountRepository.findByEmail(email);
     const passwordMatch = await bcrypt.compare(password, account.hash);
