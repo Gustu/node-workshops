@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const Uuid = require('../common/Uuid');
 
 const AccountService = ({ accountRepository }) => {
-  const SECRET = 'shhhhh';
-  const generateToken = (accountId) => jwt.sign({ accountId }, SECRET);
+  const generateToken = (accountId) => jwt.sign({ accountId }, process.env.JWT_SECRET);
 
   const login = async ({ email, password }) => {
     const account = await accountRepository.findByEmail(email);
