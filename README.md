@@ -11,12 +11,14 @@ REST API - Twitter clone
 - As a user I can read all tweets (“News Feed”)
   - Sorted from latest to oldest
  
-##
+## Tasks
 
+```
 01 - Simple implementation with in-memory database
 02 - Database
 03 - User login/registration
 04 - Modular monolith
+```
 
 ## Presentation
 
